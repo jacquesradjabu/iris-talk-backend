@@ -14,11 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import { Request, Response } from "express";
 /**
  * @public
- * @param req any | object 
- * @param res any | object
  */
-export default function notFound(req: any, res: any): void {
-   res.status(404).json({ error: 'not found' });
+export default function notFound(_: Request, res: Response): void {
+   res.sendStatus(404);
 }

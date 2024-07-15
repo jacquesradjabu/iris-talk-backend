@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 import client from '../client';
-import getUser from '../helpers/getUser';
-import isValidInput from '../helpers/isValidInput';
+import getUser from '../utils/getUser';
+import isValidInput from '../utils/isValidInput';
 import { Response, Request } from 'express';
 const messages = client.message;
 const user = client.user;

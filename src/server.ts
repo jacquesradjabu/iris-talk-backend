@@ -14,21 +14,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import express from 'express';
+import express, { Request, Response } from 'express';
+// import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import compress from 'compression';
 import cors from 'cors';
+import helmet from 'helmet';
 import notFound from './controllers/notfound';
-import * as loginRouter from './api/login.router';
-import * as registerRouter from './api/register.router';
-import * as messageRouter from './api/message.router';
-import * as userRouter from './api/users.router';
+import userRouter from './routes/user.routes';
+import authRouter from './routes/auth.routes';
+// import * as loginRouter from './api/login.router';
+// import * as messageRouter from './api/message.router';
+// import * as userRouter from './api/users.router';
+// import Template from './templates/template';
 
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use('/api/v1/users', userRouter.router);
-app.use('/api/v1/messages', messageRouter.router);
-app.use('/login', loginRouter.router);
-app.use('/register', registerRouter.router);
-app.use('*', notFound);
+// app.use(bodyParser.urlenconded({ extended: true }));
+app.use(cookieParser());
+app.use(compress());
+app.use(cors());
+app.use(helmet());
+// app.use('/api/v1/users', userRouter.router);
+// app.use('/api/v1/messages', messageRouter.router);
+// app.use('/login', loginRouter.router);
+// app.use('/register', registerRouter.router);
+app.use('/', authRouter);
+app.use('/', userRouter);
+app.get('*', notFound)
 export default app;

@@ -18,8 +18,8 @@ import jwt from 'jsonwebtoken';
 import { Response, Request } from 'express';
 import bcrypt from 'bcrypt';
 import client from "../client";
-import isValidInput from '../helpers/isValidInput';
-import isValidPassword from '../helpers/isValidPassword';
+import isValidInput from '../utils/isValidInput';
+import isValidPassword from '../utils/isValidPassword';
 /**
  * @public 
  * LOGIN MODEL

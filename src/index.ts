@@ -15,9 +15,5 @@
  * limitations under the License.
  */
 import app from "./server";
-import dotenv from 'dotenv';
-
-
-dotenv.config();
-const port = process.env.PORT;
-app.listen(port);
+import mainConfig from "./config/config";
+app.listen(mainConfig.port);
