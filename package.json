@@ -6,12 +6,13 @@
    "scripts": {
       "dev": "nodemon dist/index.js",
       "watch": "tsc -w",
+      "build": "tsc",
       "start": "node dist/index.js",
       "test": "echo \"Error: no test specified\" && exit 1"
    },
-   "keywords": [],
-   "author": "",
-   "license": "ISC",
+   "keywords": ["iris-talk", "social-media", "chat-application"],
+   "author": "Birusha Ndegeya",
+   "license": "Apache",
    "devDependencies": {
       "@types/bcrypt": "^5.0.2",
       "@types/compression": "^1.7.5",
