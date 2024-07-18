@@ -2,8 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import userSchema, { authenticate } from "../models/user.model";
 import jwt from 'jsonwebtoken';
 import mainConfig from '../config/config';
-// import expressJwt from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
+import { expressjwt, Request as JWTRequest } from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
 
+
+
+// export const requireSignin = expressJwt({
+//    secret: mainConfig.jwtSecret,
+//    userProperty: 'auth'
+// });
+
+// export function sign() {
+
+// }
 
 export default class AuthController {
    static async signin(req: Request, res: Response): Promise<void> {
@@ -53,13 +63,30 @@ export default class AuthController {
       });
    }
 
-   static requireSignin(_: Request, __: Response, next: NextFunction) {
-      console.log('require signin');
-      next();
-   }
+   // static requireSignin = expressJwt({
+   //    secret: mainConfig.jwtSecret,
+   //    userProperty: 'auth'
+   // }) => {
+   //    console.log('Hello');
+   // }
 
-   static hasAuthorization(_: Request, __: Response, next: NextFunction) {
-      console.log('has authorization');
+   static requireSignin = expressjwt({
+      secret: mainConfig.jwtSecret,
+      algorithms: ["HS256"]
+   },);
+
+   static hasAuthorization(
+      req: Request | any,
+      res: Response,
+      next: NextFunction
+   ) {
+      const authorized = req.profile && req.auth && req.profile.userId && req.auth.userId;
+      if (!(authorized)) {
+         res.status(403).json({
+            error: 'User is not authorized!'
+         });
+      }
+      console.log(authorized);
       next();
    }
 }

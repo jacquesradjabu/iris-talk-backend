@@ -47,7 +47,7 @@ model Message {
   updated        DateTime @default(now())
   receiverId     String
   senderId       String
-  user           User     @relation(fields: [receiverId], references: [userId])
+  user           User     @relation(fields: [receiverId], references: [userId], onDelete: Cascade)
 
   @@map("message")
 }
