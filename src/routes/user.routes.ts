@@ -5,9 +5,13 @@ import AuthController from "../controllers/auth.controller";
 
 const router = Router();
 
+router.route('/api/users/query?')
+   .get(UserController.search);
+
 router.route('/api/users')
    .get(UserController.list)
    .post(UserController.create);
+
 
 router.route('/api/users/:userId')
    .get([AuthController.requireSignin, UserController.read])
@@ -15,5 +19,6 @@ router.route('/api/users/:userId')
    .delete([AuthController.requireSignin, AuthController.hasAuthorization, UserController.remove]);
 
 router.param('userId', UserController.userById);
+
 
 export default router;

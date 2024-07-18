@@ -15,18 +15,7 @@
  * limitations under the License.
  */
 import client from "../client";
-/**
- * GET UNIQUE MESSAGE TO THE DATABASE
- * @public
- */
-const message = client.message;
-export default async function getMessage(id: string) {
-   const allUsers = await message.findMany();
-   const uniqueMessage = allUsers.find(function (us) {
-      return us.id == id;
-   });
-   if (!uniqueMessage) {
-      return `user does not exit`;
-   }
-   return uniqueMessage;
-}
+
+const messageSchema = client.message;
+
+export default messageSchema;

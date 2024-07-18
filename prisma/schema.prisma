@@ -23,18 +23,17 @@ enum Role {
 // model user
 
 model User {
-  userId          String      @id @unique @default(uuid()) @map("user_id")
-  userName        String      @map("user_name")
-  userEmail       String      @unique @map("user_email")
-  userDescription String?     @map("user_description")
-  userAvatarURL   String?     @map("user_avatar_url")
-  userPassword    String      @map("user_password")
-  created         DateTime    @default(now())
-  updated         DateTime    @default(now())
-  role            Role        @default(USER)
-  follower        Follower[]
-  following       Following[]
-  Message         Message[]
+  userId          String   @id @default(uuid()) @map("user_id")
+  userName        String   @map("user_name")
+  userEmail       String   @unique @map("user_email")
+  userDescription String?  @map("user_description")
+  userAvatarURL   String?  @map("user_avatar_url")
+  userPassword    String   @map("user_password")
+  created         DateTime @default(now())
+  updated         DateTime @default(now())
+  role            Role     @default(USER)
+
+  Message Message[]
 
   @@map("user")
 }
@@ -42,33 +41,13 @@ model User {
 // model message
 
 model Message {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @map("updated_at")
-  authorId  String   @map("author_id")
-  author    String
-
-  user User @relation(fields: [authorId], references: [userId])
+  messageId      String   @id @unique @default(uuid())
+  messageContent String
+  created        DateTime @default(now())
+  updated        DateTime @default(now())
+  receiverId     String
+  senderId       String
+  user           User     @relation(fields: [receiverId], references: [userId])
 
   @@map("message")
-}
-
-// model Follower
-
-model Follower {
-  id String @id @unique
-
-  user User @relation(fields: [id], references: [userId])
-
-  @@map("follower")
-}
-
-// model Following
-
-model Following {
-  id   String @id @unique
-  user User   @relation(fields: [id], references: [userId])
-
-  @@map("following")
 }

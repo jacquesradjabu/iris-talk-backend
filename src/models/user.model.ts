@@ -31,7 +31,7 @@ export async function encryptPassword(password: string): Promise<string> {
    // if (!password) return;
    try {
       const salt = Math.round(Math.random() * 10 + 5);
-      console.log(salt);
+      // console.log(salt);
       const hashed = await bcrypt.hash(password, salt);
       return hashed;
    } catch {

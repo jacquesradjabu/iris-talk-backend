@@ -16,15 +16,21 @@ export default class UserController {
       const { userEmail, userPassword, userName } = req.body;
       try {
          if (!isValidEmail(userEmail)) {
-            res.status(400).json({ message: 'Invalid email adress' });
+            res.status(400).json({
+               message: 'Invalid email adress'
+            });
             return;
          }
          if (!isValidInput(userName)) {
-            res.status(400).json({ message: 'Enter a name' });
+            res.status(400).json({
+               message: 'Enter a name'
+            });
             return;
          }
          if (!isValidPassword(userPassword)) {
-            res.status(400).json({ message: 'The password must be at least 6 characters long, must contain at least one letter, must contain at least one number and must not be an empty string' });
+            res.status(400).json({
+               message: 'The password must be at least 6 characters long, must contain at least one letter, must contain at least one number and must not be an empty string'
+            });
             return;
          }
          /**
@@ -33,7 +39,11 @@ export default class UserController {
           */
          const hashPassword = await encryptPassword(userPassword);
          const user = await userSchema.create({
-            data: { userEmail, userPassword: hashPassword, userName },
+            data: {
+               userEmail,
+               userPassword: hashPassword,
+               userName
+            },
          });
          res.status(201).json({
             status: "created",
@@ -42,7 +52,9 @@ export default class UserController {
                // accessToken: ,
                userId: user.userId,
                userName: user.userName,
-               userEmail: user.userEmail
+               userEmail: user.userEmail,
+               userDescription: null,
+               userAvatarURL: null
             }
          });
       } catch (error: any) {
@@ -71,7 +83,9 @@ export default class UserController {
                userName: true,
                userEmail: true,
                created: true,
-               updated: true
+               updated: true,
+               userAvatarURL: true,
+               userDescription: true
             }
          });
          if (!allUsers) {
@@ -95,7 +109,12 @@ export default class UserController {
       }
    }
 
-   static async userById(req: Request | any, res: Response, next: NextFunction, userId: string): Promise<void> {
+   static async userById(
+      req: Request | any,
+      res: Response,
+      next: NextFunction,
+      userId: string
+   ): Promise<void> {
       /*
       ===================================================================================
       GET A SPECIFIC USER BY ID
@@ -130,8 +149,11 @@ export default class UserController {
       res.send(req.profile);
    }
 
-   static async update(req: Request | any, res: Response) {
-      const { userName, userEmail, userPassword } = req.body;
+   static async update(
+      req: Request | any,
+      res: Response
+   ) {
+      const { userName, userEmail, userDescription, userAvatarURL, userPassword } = req.body;
       try {
          let user = req.profile;
          const id = user.userId;
@@ -143,6 +165,8 @@ export default class UserController {
                userName: userName,
                userEmail: userEmail,
                userPassword: userPassword,
+               userAvatarURL: userAvatarURL,
+               userDescription: userDescription
                // updated: Date.now().toLocaleString() how to handle date errors in my code
             }
          })
@@ -175,7 +199,38 @@ export default class UserController {
             statusCode: 400,
             message: 'Failed to delete!',
             error: error.message
-         })
+         });
+      }
+   }
+
+   /**
+    * @public
+    */
+
+   static async search(req: Request, res: Response): Promise<void> {
+      try {
+         const userName: any = req.query.name;
+         const user = await userSchema.findMany({
+            where: {
+               userName: userName
+            },
+            select: {
+               userAvatarURL: true,
+               userDescription: true,
+               userEmail: true,
+               userName: true,
+               userId: true,
+            }
+         });
+         if (user.length == 0) {
+            res.send('User not found');
+            return;
+         }
+         res.json(user);
+
+      } catch (error: any) {
+         res.status(400).json({});
+         return;
       }
    }
 }

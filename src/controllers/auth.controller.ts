@@ -1,9 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import userSchema from "../models/user.model";
+import userSchema, { authenticate } from "../models/user.model";
 import jwt from 'jsonwebtoken';
-// import expressJwt from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
 import mainConfig from '../config/config';
-import { authenticate } from "../models/user.model";
+// import expressJwt from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
 
 
 export default class AuthController {
@@ -36,7 +35,9 @@ export default class AuthController {
                accessToken: token,
                userId: user.userId,
                userName: user.userName,
+               userDescription: user.userDescription,
                userEmail: user.userEmail,
+               userAvatarURL: user.userAvatarURL,
             }
          });
       } catch (error: any) {
