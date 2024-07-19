@@ -24,6 +24,7 @@ import notFound from './controllers/notfound';
 import userRouter from './routes/user.routes';
 import authRouter from './routes/auth.routes';
 import messageRouter from './routes/message.routes';
+import currentUserRouter from './routes/current.routes';
 // import Template from './templates/template';
 
 
@@ -32,8 +33,9 @@ app.use(express.json());
 // app.use(bodyParser.urlenconded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors());
+app.use(cors({ origin: '*'}));
 app.use(helmet());
+app.use('/api/getcurrentuser/', currentUserRouter);
 app.use('/', authRouter);
 app.use('/', userRouter);
 app.use('/', messageRouter);

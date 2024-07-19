@@ -35,4 +35,4 @@ CREATE UNIQUE INDEX "user_user_email_key" ON "user"("user_email");
 CREATE UNIQUE INDEX "message_messageId_key" ON "message"("messageId");
 
 -- AddForeignKey
-ALTER TABLE "message" ADD CONSTRAINT "message_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "user"("user_id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "message" ADD CONSTRAINT "message_receiverId_fkey" FOREIGN KEY ("receiverId") REFERENCES "user"("user_id") ON DELETE CASCADE ON UPDATE CASCADE;
