@@ -73,7 +73,7 @@ export default class AuthController {
    static requireSignin = expressjwt({
       secret: mainConfig.jwtSecret,
       algorithms: ["HS256"]
-   },);
+   });
 
    static hasAuthorization(
       req: Request | any,
