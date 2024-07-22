@@ -20,6 +20,11 @@ enum Role {
   ADMIN
 }
 
+enum StatusMessage {
+  sender
+  receiver
+}
+
 // model user
 
 model User {
@@ -35,6 +40,9 @@ model User {
 
   Message Message[]
 
+  // sender   Message[]
+  // receiver Message[
+
   @@map("user")
 }
 
@@ -47,7 +55,16 @@ model Message {
   updated        DateTime @default(now())
   receiverId     String
   senderId       String
-  user           User     @relation(fields: [receiverId], references: [userId], onDelete: Cascade)
+  // user           User     @relation(fields: [receiverId], references: [userId], onDelete: Cascade)
+  // User           User?    @relation(fields: [userUserId], references: [userId])
+  // userUserId     String?
+  // User           User?    @relation(fields: [userUserId], references: [userId])
+  // userUserId     String?
+
+  // sender   User @relation(fields: [senderId], references: [userId])
+  // receiver User @relation(fields: [receiverId], references: [userId])
+  // User       User?   @relation(fields: [userUserId], references: [userId])
+  // userUserId String?
 
   @@map("message")
 }
