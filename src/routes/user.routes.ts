@@ -13,12 +13,17 @@ router.route('/api/users')
    .post(UserController.create);
 
 
-router.route('/api/users/:userId')
-   .get([AuthController.requireSignin, UserController.read])
-   .put([AuthController.requireSignin, AuthController.hasAuthorization, UserController.update])
-   .delete([AuthController.requireSignin, AuthController.hasAuthorization, UserController.remove]);
+// router.route('/api/users/:userId')
+//    .get([UserController.read])
+//    // .get([AuthController.requireSignin, UserController.read])
+//    .put([AuthController.requireSignin, AuthController.hasAuthorization, UserController.update])
+//    .delete([AuthController.requireSignin, AuthController.hasAuthorization, UserController.remove]);
 
 router.param('userId', UserController.userById);
 
+router.route('/api/users/:userId')
+   .get(UserController.read)
+   .put(UserController.update)
+   .delete(UserController.remove);
 
 export default router;

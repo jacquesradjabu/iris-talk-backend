@@ -20,28 +20,20 @@ enum Role {
   ADMIN
 }
 
-enum StatusMessage {
-  sender
-  receiver
-}
-
 // model user
 
 model User {
-  userId          String   @id @default(uuid()) @map("user_id")
-  userName        String   @map("user_name")
-  userEmail       String   @unique @map("user_email")
-  userDescription String?  @map("user_description")
-  userAvatarURL   String?  @map("user_avatar_url")
-  userPassword    String   @map("user_password")
-  created         DateTime @default(now())
-  updated         DateTime @default(now())
-  role            Role     @default(USER)
-
-  Message Message[]
-
-  // sender   Message[]
-  // receiver Message[
+  userId           String    @id @default(uuid()) @map("user_id")
+  userName         String    @map("user_name")
+  userEmail        String    @unique @map("user_email")
+  userDescription  String?   @map("user_description")
+  userAvatarURL    String?   @default("I am a mysterious who has yet to fill out my bio") @map("user_avatar_url")
+  userPassword     String    @map("user_password")
+  created          DateTime  @default(now())
+  updated          DateTime  @default(now())
+  role             Role      @default(USER)
+  sentMessages     Message[] @relation("SentMessages")
+  receivedMessages Message[] @relation("ReceivedMessages")
 
   @@map("user")
 }
@@ -55,16 +47,8 @@ model Message {
   updated        DateTime @default(now())
   receiverId     String
   senderId       String
-  // user           User     @relation(fields: [receiverId], references: [userId], onDelete: Cascade)
-  // User           User?    @relation(fields: [userUserId], references: [userId])
-  // userUserId     String?
-  // User           User?    @relation(fields: [userUserId], references: [userId])
-  // userUserId     String?
-
-  // sender   User @relation(fields: [senderId], references: [userId])
-  // receiver User @relation(fields: [receiverId], references: [userId])
-  // User       User?   @relation(fields: [userUserId], references: [userId])
-  // userUserId String?
+  sender         User     @relation("SentMessages", fields: [senderId], references: [userId])
+  receiver       User     @relation("ReceivedMessages", fields: [receiverId], references: [userId])
 
   @@map("message")
 }

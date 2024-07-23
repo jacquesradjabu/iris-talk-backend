@@ -18,16 +18,11 @@ import { Response, Request, NextFunction } from 'express';
 import messageSchema from '../models/message.model';
 import client from '../client';
 import isValidInput from '../utils/isValidInput';
-/**
- * @public
- * MESSAGE MODEL LOGIC
- */
 export default class MessageController {
-
    /**
- * @public
- * CREATE MESSAGE
- */
+    * @public
+    * create a new message
+    */
    static async create(req: Request, res: Response): Promise<void> {
       const { messageContent, receiverId, senderId } = req.body;
       try {
@@ -37,7 +32,12 @@ export default class MessageController {
             res.status(403).send('cannot send empty message');
             return;
          }
-
+         const sender = await client.user.findUnique({ where: { userId: senderId } });
+         const receiver = await client.user.findUnique({ where: { userId: receiverId } });
+         if (!sender || !receiver) {
+            res.status(404).send('sender or receiver not found');
+            return;
+         }
          await messageSchema.create({
             data: {
                messageContent: messageContent,
@@ -45,24 +45,47 @@ export default class MessageController {
                senderId: senderId
             }
          });
-         res.status(200).json(`message sent!`);
+         res.status(201).json(`created successfully!`);
       } catch (error: any) {
-         res.status(500).json({ message: error.message });
+         res.status(400).json({ message: error.message });
+         return;
       } finally {
          await client.$disconnect();
+         return;
       }
    }
    /**
-       * @public
-       * LIST ALL MESSAGES
-       */
+    * @public
+    * LIST ALL MESSAGES
+    */
    static async list(_: Request, res: Response): Promise<void> {
       try {
          const allMessages = await messageSchema.findMany({
             include: {
-               user: {
+               sender: {
                   select: {
-                     userName: true
+                     userPassword: false,
+                     userName: true,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
+                  }
+               },
+               receiver: {
+                  select: {
+                     userName: true,
+                     userPassword: false,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
                   }
                }
             }
@@ -76,11 +99,73 @@ export default class MessageController {
          res.status(400).json({
             message: error.message
          });
+         return;
       } finally {
          await client.$disconnect();
+         return;
       }
    }
 
+   /**
+    * @public
+    * listTalk
+    * This function takes two string [senderId, receiverId] as arguments and returns a list of talk between two people 
+    */
+   static async listTalk(req: Request, res: Response): Promise<void> {
+      try {
+         const { senderId, receiverId } = req.body;
+         const sender = await client.user.findUnique({ where: { userId: senderId } });
+         const receiver = await client.user.findUnique({ where: { userId: receiverId } });
+         if (!sender || !receiver) {
+            res.status(404).send('sender or receiver not found');
+            return;
+         }
+         const talkList = await messageSchema.findMany({
+            where: {
+               senderId: senderId,
+               receiverId: receiverId
+            },
+            include: {
+               sender: {
+                  select: {
+                     userPassword: false,
+                     userName: true,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
+                  }
+               },
+               receiver: {
+                  select: {
+                     userName: true,
+                     userPassword: false,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
+                  },
+               },
+            }
+         })
+         res.status(200).json(talkList);
+      } catch (err) {
+         res.status(400).json({
+            message: 'Bad Request',
+            error: err.message
+         });
+         return
+      } finally {
+         await client.$disconnect();
+         return;
+      }
+   }
 
    /**
     * @public
@@ -96,6 +181,34 @@ export default class MessageController {
          const message = await messageSchema.findUnique({
             where: {
                messageId: messageId
+            },
+            include: {
+               sender: {
+                  select: {
+                     userPassword: false,
+                     userName: true,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
+                  },
+               },
+               receiver: {
+                  select: {
+                     userName: true,
+                     userPassword: false,
+                     userDescription: false,
+                     userId: true,
+                     userAvatarURL: true,
+                     role: false,
+                     created: true,
+                     updated: false,
+                     userEmail: true,
+                  }
+               },
             }
          });
          if (!message) {
@@ -110,7 +223,6 @@ export default class MessageController {
          await client.$disconnect();
       }
    }
-
 
    /**
     * @public
@@ -147,7 +259,7 @@ export default class MessageController {
                messageContent: messageContent,
                updated: new Date().toUTCString()
             }
-         });   
+         });
          res.send('Message edited!');
       } catch (error: any) {
          res.status(500).json({ message: error.message });

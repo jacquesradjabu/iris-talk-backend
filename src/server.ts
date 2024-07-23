@@ -14,8 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import express from 'express';
-// import bodyParser from 'body-parser';
+import express, { Application } from 'express';
 import cookieParser from 'cookie-parser';
 import compress from 'compression';
 import cors from 'cors';
@@ -28,12 +27,11 @@ import currentUserRouter from './routes/current.routes';
 // import Template from './templates/template';
 
 
-const app = express();
+const app: Application = express();
 app.use(express.json());
-// app.use(bodyParser.urlenconded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-app.use(cors({ origin: '*'}));
+app.use(cors({ origin: '*' }));
 app.use(helmet());
 app.use('/api/getcurrentuser/', currentUserRouter);
 app.use('/', authRouter);
