@@ -40,7 +40,7 @@ export async function encryptPassword(password: string): Promise<string> {
 }
 export function makeSalt() {
    // not working proprely it should return a random number to hashpassord according to the create time of password
-   const date = new Date();
+   // const date = new Date();
    // return Math.random(date.valueOf() * Math.random()) + ''
 }
 export default userSchema;

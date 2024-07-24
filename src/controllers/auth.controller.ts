@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import userSchema, { authenticate } from "../models/user.model";
 import jwt from 'jsonwebtoken';
 import mainConfig from '../config/config';
-import { expressjwt, Request as JWTRequest } from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
+// import { expressjwt, Request as JWTRequest } from 'express-jwt'; // warning should work in the browser with this dependancy I must install it tomorrow
 
 
 
@@ -70,10 +70,13 @@ export default class AuthController {
    //    console.log('Hello');
    // }
 
-   static requireSignin = expressjwt({
-      secret: mainConfig.jwtSecret,
-      algorithms: ["HS256"]
-   });
+   // static requireSignin = expressjwt({
+   //    secret: mainConfig.jwtSecret,
+   //    algorithms: ["HS256"]
+   // });
+   static requireSignin() {
+      console.log('require signin');
+   }
 
    static hasAuthorization(
       req: Request | any,
